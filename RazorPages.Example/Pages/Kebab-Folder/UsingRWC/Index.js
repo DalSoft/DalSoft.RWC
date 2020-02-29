@@ -1,0 +1,1 @@
+﻿alert('Hello from Kebab-Folder/UsingRWC/Index.js');

@@ -1,0 +1,1 @@
+﻿alert('Hello from Dot.Folder/UsingRWC/Index.js');

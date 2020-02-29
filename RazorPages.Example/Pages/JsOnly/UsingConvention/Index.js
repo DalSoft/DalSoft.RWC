@@ -1,0 +1,1 @@
+﻿alert('Hello from js only using convention');

@@ -1,0 +1,347 @@
+
+
+
+![alt](./rwc.svg)
+
+# Razor Webpack Components
+Razor Pages and Webpack can be friends 👍
+
+> RWC is in beta, released as something that I found useful myself.
+
+## What is RWC?
+
+Use Webpack by just adding `<webpack />` to your Razor Pages.
+
+(R )azor (W )ebpack (C )omponents is a package that gives you a modern JavaScript / CSS experience when developing with Razor Pages. Although SPA's are great there are good reasons why Razor Pages is still a good choice for web development - for example redirect flows for OpenID and anything where you need server rendering.  
+
+Razor Pages is still one of the easiest ways to develop a web app using ASP.NET Core. However currently there isn't a [well maintained modern bundling solution for Razor Pages](https://github.com/dotnet/AspNetCore.Docs/issues/11610). 
+**RWC seamlessly allows you to use the popular static bundler [Webpack](https://webpack.js.org/) with Razor pages**.
+
+## Things RWC can do:
+👉 Easily manage your frontend Packages using npm
+
+👉 JavaScript and CSS dependencies added to your Pages by convention
+
+👉 Minification, Cache busting and bundling in production
+
+👉 Reference your JavaScript and CSS dependencies using a Razor Component
+
+👉 Easily add vendor frameworks like React, Vue etc.
+
+## How to use
+
+Ensure you have Node.js and .NET Core >= 3.0 installed.
+
+To use RWC you need a Razor Pages project.
+
+Use an existing Razor pages project or create a new one using Visual Studio or the dotnet CLI:
+
+```bash
+> dotnet new razor
+```
+
+### Install the DalSoft.RazorWebpackComponents package via DotNet CLI
+
+```bash
+> dotnet add package DalSoft.RazorWebpackComponents
+```
+
+> Now Build your project this ensures all the required build files are copied to your project.
+
+###
+Add the RWC tag helper to _ViewImports.cshtml
+```csharp
+@addTagHelper *, DalSoft.RazorWebpackComponents
+```
+
+
+### Add `<Webpack />` to _layout.cstml 
+
+Now you have a Razor Pages project add the `<Webpack />` component to the head (for CSS) and body (for JS) of your _layout Razor template.  
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <webpack /> <!-- Render CSS here -->
+</head>
+<body>
+	@RenderBody()
+	<webpack /> <!-- Render JavaScript here -->
+</body>
+</html>
+```
+
+### RWC by convention add `<Webpack />` to a Razor Page
+
+Use an existing Razor page or create a new page using Visual Studio or the dotnet CLI:
+```bash
+> dotnet new page --name MyPage
+```
+Add the `<Webpack />` component to your page.
+```html
+@page
+<div>
+My Page
+</div>
+<!-- Load webpack bundle by convention -->
+<webpack />
+```
+Add a JavaScript file with some trivial code to test. **Important give the file the same as your page** in our example `MyPage.js`.
+
+```js
+alert('Hello from MyPage');
+```
+Add a CSS file with some trivial code to test. **Important give the file the same as your page** in our example MyPage.css.
+```css
+body {
+    background-color: peru;
+}
+```
+Now run your project and from the browser go to the page you created in our case /MyPage. View the source and you will notice the script and link tags are referencing your JavaScript and CSS bundles automatically!
+
+That's how simple RWC by convention is. 
+**[All CSS and JS in the Pages folder are treated as entries](https://webpack.js.org/concepts/entry-points/).**  If you name your JS or CSS *(JS and/or CSS can be an entry)* the same as your Razor page then the bundle is automatically added to your page by convention.
+
+> You don't have to worry about bundles accidentally being referenced multiple times RWC takes care of this for you.
+
+### Component sharing by adding named RWC to a Razor Page
+
+So RWC by convention is great for entry points into your web app, but what if you wanted to share components between pages? To share components you need to reference the RWC by name. 
+
+Each entry (that is a JS or CSS file in your Pages folder) generates a Razor component. The naming convention for RWC is folder path (slashes replaced by dashes) followed by the filename minus the extension. 
+
+*For example if you had a JS file called `MyComponent.js` in a folder Pages/Components*. Then to reference by name you would add `<Components-MyComponent />` to your Razor page. By adding the RWC to your page by name the JS and CSS bundles are referenced. You can of course add multiple named RWC to a page.
+
+> Because Razor Components need to start with a Capital letter be careful not to mix cases in the same folder e.g. myComponent.js and MyComponent.js.
+
+So for the test  example you created in "RWC by convention add `<Webpack />` to a Razor Page":
+
+Create a new Razor page and add `<MyPage />` to your new page. The MyPage entry is referenced in your new page meaning when you run the web app you will see that the MyPage JS and CSS bundles are referenced correctly.
+
+> You may need to build your project first to generate the Razor Component
+
+###  Recap
+* Entries are generated by adding JS and/or CSS to the `Pages folder`.
+* Each entry generates a RWC 
+* Add `<webpack />` to the head and body of your Razor layout
+* To have JS and CSS referenced by convention add  `<webpack />`  to your Razor page
+* To Share components add a RWC by name to your Razor page.
+
+### Module resolution using Webpack 
+
+Let's do a slightly more realistic example that shows how [module](https://webpack.js.org/concepts/modules/) resolution works with Webpack.
+
+Create a file named say.js in a folder named MyJsApp (i.e. outside the Pages folder), so in your project MyJsApp/say.js.
+
+With the following code:
+```js
+const say = (message) => {
+    const sayElement = document.createElement("div");
+    sayElement.innerText = message;
+    document.getElementById("app").append(message, sayElement);
+};
+
+export { say }
+```
+
+In _layout.cshtml ensure that you have added `<div id="app"></app>`
+
+Add the file Index.js in Pages folder (this is your entry) with the following code:
+```js
+import "./say.css";
+import { say } from "../MyJsApp/say";
+
+say("Hello");
+```
+
+Add `<webpack />` to Pages/Index.cshtml.
+
+Run the project you will see that the bundle Index.js is referenced which bundles the module MyJsApp/say.js because it's referenced as a dependency because it was imported by Index.js.
+
+> Remember all CSS and JS  files in the Pages folder are treated as an entry. Therefore you don't have to put all your JavaScript and CSS in the Pages folder. Nothing bad will happen if you do, your build will just slowdown a bit. 
+
+Webpack documentation has more information about how it's [module resolution](https://webpack.js.org/concepts/module-resolution/) works.
+
+## Layouts and Partials
+
+RWC works with layouts and partials and this an excellent way to share components.  Add `<webpack />` or a named RWC to a layout / partial. If the partial or layout is used in a page then the RWC is added to the page and the bundles are referenced.
+
+## Adding Vendor Packages
+
+Adding vendors is simple with RWC. Let's add React to our Razor Pages web app.
+
+From the root folder of the project run the following commands:
+
+```bash
+npm install --save-dev @babel/preset-react
+```
+```bash
+npm install react react-dom
+```
+
+Add the babel preset config for React to your package.json file, it should look like:
+```js
+"babel":{
+    "presets" : [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
+  }
+```
+
+In _layout.cshtml ensure that you have added `<div id="app"></div>`
+
+Then in a Razor page add a JavaScript file called reactTest.js To test that React is working as expected add the following code:
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+const App = (props) => {
+    return (
+        <>
+	        Hello from React  
+        </>)
+}
+
+ReactDOM.render(<App />, document.getElementById('app'))
+```
+
+Now in any Razor page add <react-test />
+
+> Note that Vendor bundles are included for **all entries**
+
+## Images and Fonts
+
+Any referenced images / fonts are treated as modules and added to the bundle as you would expect. Webpack uses [module resolution](https://webpack.js.org/concepts/module-resolution/) to look for references in your CSS file or JS imports e.g. `import ./style.css`
+
+## Node scripts
+
+There are four scripts:
+
+Run the Webpack dev server (see Webpack dev server)
+```bash
+npm start
+```
+
+Watch for file changes and rebuild your bundles in dev mode
+```bash
+npm run watch
+```
+Builds your bundles in dev mode. This what is called when you do dotnet build with Debug configuration
+```bash
+npm run build
+```
+
+Builds your bundles in production mode (minfiy, cache bust etc). This what is called when you do dotnet publish with a Release configuration
+```bash
+npm run release
+```
+
+## Webpack dev server
+
+Webpack well works in proxy mode but no [HMR](https://webpack.js.org/concepts/hot-module-replacement/) yet 😢
+
+To use the Webpack dev server you need to change webpack.config. Uncomment the devServer config and change the proxy target to be the address of your Razor Pages app when you are debugging:
+
+```js
+devServer: {
+            contentBase: "wwwroot/dist",
+            publicPath: "/dist/",
+            inline: false,
+            proxy: {
+                '/': {
+                    target: 'https://localhost:44327',
+                    secure: false
+                }
+            }
+        },
+```
+
+Run your Razor Pages App as usual.
+
+Then from the root of your project run this command:
+```bash
+npm start
+```
+
+No change some JavaScript or CSS, your page should reload with your changes reflected.
+
+## Where are my bundles?
+
+Everything is under wwwroot/dist, you can change the output folder in your webpack.config.
+
+A typical project might look like:
+```
+├───assets
+│   ├───fonts
+│   └───images
+├───css
+└───js
+      vendors.2f12ac17.js
+```
+Pretty self explanatory [code is split](https://webpack.js.org/guides/code-splitting/) between css, js and vendors (third party libraries react etc).  Each folder follows the same structure as your /Pages folder.
+
+## Deploying
+RWC Node scripts are also called via a MSBuild task so deploying couldn't be easier.
+
+For dev just build as normal with `Debug` configuration.
+```bash
+dotnet build -c Debug
+```
+
+For production publish as normal with `Release` configuration
+```bash
+dotnet  publish -c Release
+```
+> If for some reason you need to you can of course run the node scripts directly
+
+### Differences in the production build
+* Cache busting using the file hash
+* Minification of CSS and JavaScript
+
+## How does RWC Work?
+
+RWC uses ASP.NET Tag Helpers / Razor Components together with Webpack. A custom MSBuild task is used to call a node script in similar way to how [ASP.NET SPA templates](https://docs.microsoft.com/en-us/aspnet/core/client-side/spa/react?view=aspnetcore-3.1&tabs=visual-studio) work. 
+
+There are three Webpack files that do the work:
+* `webpack.config.js` - RWC Webpack config finds every JS and CSS file in the `Pages` folder and makes it's an [Entry]([https://webpack.js.org/concepts/#entry](https://webpack.js.org/concepts/#entry)).
+
+* `_Webpack/WebpackRazorComponents.ejs` this is the [template](https://github.com/jantimon/html-webpack-plugin#options) called by the [HtmlWebpackPlugin](https://webpack.js.org/plugins/html-webpack-plugin/) to generate Razor Components for each entry. The Razor Component just has the script and link tags for the bundle required for that entry. The Razor Components are generated in the `_webpack/GeneratedRazorComponents` folder.
+
+* `_Webpack/ComponentsCSharp.ejs` is the template called by the HtmlWebpackPlugin to create a C# class that generates a ASP.NET Tag Helper so you can reference the Razor Component using it's tag name. The class is called_Components.cs and is generated in the `_webpack/GeneratedRazorComponents` folder.
+
+The RWC  `<webpack />` tag helper works by walking a Razor Page it's layouts and partials etc and deciding which RWC should be used to reference the correct js/css bundle.
+
+## What npm packages does RWC use?
+RWC uses the following packages all of which are devDependencies:
+* @babel/core
+* @babel/preset-env
+* babel-loader
+* cache-loader
+* clean-webpack-plugin
+* css-loader
+* file-loader
+* glob
+* html-webpack-plugin
+* mini-css-extract-plugin
+* optimize-css-assets-webpack-plugin
+* style-loader
+* terser-webpack-plugin
+* webpack
+* webpack-cli
+* webpack-dev-server
+
+## Limitations and Known Issues
+
+* The first letter in a Razor component has to be uppercase, so mixing casing e.g. index.js and Index.js is a bad idea.
+
+* If you change the Razor Pages root from `/Pages` RWC won't work at the moment.
+
+* Adding CSS without matching JavaScript works but an empty JS file is created. This is just an empty Webpack module but helps with dependency resolution. The file is tiny so don't worry about it.
+
+* Folders with a dot in there name do not work (however files with a dot in there name do).
+
+* Folders with a dash in there name do not work (however files with a dash in there name do).
+

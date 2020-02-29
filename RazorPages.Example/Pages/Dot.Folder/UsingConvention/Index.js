@@ -1,0 +1,1 @@
+﻿alert('Hello from Dot.Folder/UsingConvention/Index.js');

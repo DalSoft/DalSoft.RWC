@@ -1,0 +1,15 @@
+﻿@font-face {
+    font-family: 'Lato';
+    src: url('./Lato-Regular.ttf');
+    font-weight: 600;
+    font-style: normal;
+}
+
+body {
+    background: pink;
+    font-family: 'Lato';
+}
+
+.hello {
+    font-family: 'Lato';
+}

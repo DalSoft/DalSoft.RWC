@@ -1,0 +1,1 @@
+﻿alert('Hello from Test-Dot File using Razor Webpack Components');

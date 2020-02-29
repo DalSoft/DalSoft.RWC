@@ -1,0 +1,1 @@
+﻿alert('Hello from Kebab-Folder/UsingConvention/Index.js');

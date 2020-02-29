@@ -1,0 +1,1 @@
+﻿alert('Hello from KebabFile/UsingRWC/x-Index.js');

@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <VersionPrefix>0.0.5</VersionPrefix>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <Description>
+      Use Webpack by just adding &lt;webpack /&gt; to your Razor Pages.
+      
+      (R )azor (W )ebpack (C )omponents is a package that gives you a modern JavaScript / CSS experience when developing with Razor Pages. 
+      
+      RWC seamlessly allows you to use the popular static bundler Webpack with Razor pages.
+    </Description>
+    <Owners>DalSoft</Owners>
+    <PackageTags>Webpack, Razor Pages, RWC, Razor Webpack Components, JavaScript, CSS</PackageTags>
+    <Owners>DalSoft</Owners>
+    <Authors>DalSoft</Authors>
+
+    <PackageIconUrl>https://dalsoft.co.uk/images/icon.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/DalSoft/DalSoft.RWC/</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/DalSoft/DalSoft.RWC/blob/master/LICENSE</PackageLicenseUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="build\**" Pack="True" PackagePath="build\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="node_modules\**" />
+    <EmbeddedResource Remove="node_modules\**" />
+    <None Remove="node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="webpack.config.js" Pack="true" />
+    <None Include="package.json" Pack="true" />
+    <None Include="_Webpack\.gitignore" Pack="true" />
+    <None Include="_Webpack\ComponentsCSharp.ejs" Pack="true" />
+    <None Include="_Webpack\WebpackRazorComponents.ejs" Pack="true" />
+  </ItemGroup>
+
+</Project>

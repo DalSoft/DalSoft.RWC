@@ -1,0 +1,1 @@
+﻿alert('Hello from KebabFile/UsingConvention/x-Index.js');

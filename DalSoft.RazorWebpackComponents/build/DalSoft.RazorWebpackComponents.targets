@@ -1,0 +1,49 @@
+﻿<Project>
+
+  <ItemGroup>
+    <WebpackConfig Include="$(MSBuildThisFileDirectory)..\content\webpack.config.js;$(MSBuildThisFileDirectory)..\content\package.json" />
+    <WebpackTemplates Include="$(MSBuildThisFileDirectory)..\content\_Webpack\*.ejs;$(MSBuildThisFileDirectory)..\content\_Webpack\.gitignore" />
+  </ItemGroup>
+  
+  <Target Name="CopyScriptsToProject" BeforeTargets="BeforeBuild;BeforeRebuild">
+    <Copy SourceFiles="@(WebpackConfig)" DestinationFolder="$(ProjectDir)" Condition="!Exists('$(ProjectDir)webpack.config.js')" />
+    <Copy SourceFiles="@(WebpackTemplates)" DestinationFolder="$(ProjectDir)_Webpack" Condition="!Exists('$(ProjectDir)_Webpack')" />
+  </Target>
+
+  <PropertyGroup>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>false</IsPackable>
+    <GeneratedRazorComponentsPath>_Webpack\GeneratedRazorComponents\**</GeneratedRazorComponentsPath>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck> <!-- Force Visual Studio to always call our target when debugging -->
+  </PropertyGroup>
+
+  <Target Name="WebpackRazorComponentsEnv" BeforeTargets="BeforeBuild;BeforeRebuild" Condition="!Exists('node_modules')">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+
+    <!-- Has node but hasn't installed packages -->
+    <Exec Command="npm install" />
+  </Target>
+
+  <Target Name="WebpackRazorComponentsBuild" BeforeTargets="BeforeBuild;BeforeRebuild">
+    <ItemGroup>
+      <RazorComponent Remove="$(GeneratedRazorComponentsPath)\*.razor" />
+      <Compile Remove="$(GeneratedRazorComponentsPath)\*.cs" />
+      <Content Remove="$(GeneratedRazorComponentsPath)\**" />
+    </ItemGroup>
+
+    <Exec Command="npm run build" Condition="'$(Configuration)' == 'Debug'" />
+    <Exec Command="npm run release" Condition="'$(Configuration)' == 'Release'" />
+
+    <ItemGroup>
+      <RazorComponent Include="$(GeneratedRazorComponentsPath)\*.razor" />
+      <Compile Include="$(GeneratedRazorComponentsPath)\*.cs" />
+      <FileWrites Include="$(GeneratedRazorComponentsPath)\*.cs" />
+    </ItemGroup>
+  </Target>
+
+</Project>
