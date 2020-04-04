@@ -157,7 +157,7 @@ say("Hello");
 
 Add `<webpack />` to Pages/Index.cshtml.
 
-Run the project you will see that the bundle Index.js is referenced which bundles the module MyJsApp/say.js because it's referenced as a dependency because it was imported by Index.js.
+Run the project you will see that the bundle Index.js is referenced which bundles the module MyJsApp/say.js because it's referenced as a dependency as it was imported by Index.js.
 
 > Remember all CSS and JS  files in the Pages folder are treated as an entry. Therefore you don't have to put all your JavaScript and CSS in the Pages folder. Nothing bad will happen if you do, your build will just slowdown a bit. 
 
@@ -208,7 +208,7 @@ const App = (props) => {
 ReactDOM.render(<App />, document.getElementById('app'))
 ```
 
-Now in any Razor page add <react-test />
+Now in any Razor page add `<react-test />`
 
 > Note that Vendor bundles are included for **all entries**
 
