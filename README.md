@@ -306,7 +306,7 @@ dotnet  publish -c Release
 RWC uses ASP.NET Tag Helpers / Razor Components together with Webpack. A custom MSBuild task is used to call a node script in similar way to how [ASP.NET SPA templates](https://docs.microsoft.com/en-us/aspnet/core/client-side/spa/react?view=aspnetcore-3.1&tabs=visual-studio) work. 
 
 There are three Webpack files that do the work:
-* `webpack.config.js` - RWC Webpack config finds every JS and CSS file in the `Pages` folder and makes it's an [Entry]([https://webpack.js.org/concepts/#entry](https://webpack.js.org/concepts/#entry)).
+* `webpack.config.js` - RWC Webpack config finds every JS and CSS file in the `Pages` folder and makes it an [Entry]([https://webpack.js.org/concepts/#entry](https://webpack.js.org/concepts/#entry)).
 
 * `_Webpack/WebpackRazorComponents.ejs` this is the [template](https://github.com/jantimon/html-webpack-plugin#options) called by the [HtmlWebpackPlugin](https://webpack.js.org/plugins/html-webpack-plugin/) to generate Razor Components for each entry. The Razor Component just has the script and link tags for the bundle required for that entry. The Razor Components are generated in the `_webpack/GeneratedRazorComponents` folder.
 
