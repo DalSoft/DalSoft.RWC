@@ -270,7 +270,7 @@ Now change some JavaScript or CSS, your page should reload with your changes ref
 
 ## Where are my bundles?
 
-Everything is under wwwroot/dist, you can change the output folder in your webpack.config.
+Everything is under wwwroot/dist. You can change the output folder in your webpack.config.
 
 A typical project might look like:
 ```
