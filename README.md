@@ -241,9 +241,9 @@ npm run release
 
 ## Webpack dev server
 
-Webpack well works in proxy mode but no [HMR](https://webpack.js.org/concepts/hot-module-replacement/) yet 😢
+Webpack dev server works well in proxy mode watching and reloading work fine.
 
-To use the Webpack dev server you need to change webpack.config. Uncomment the devServer config and change the proxy target to be the address of your Razor Pages app when you are debugging:
+To use the Webpack dev server you need to change the webpack.config. Uncomment the devServer config and change the proxy target to be the address of your Razor Pages app when you are debugging:
 
 ```js
 devServer: {
@@ -266,7 +266,7 @@ Then from the root of your project run this command:
 npm start
 ```
 
-No change some JavaScript or CSS, your page should reload with your changes reflected.
+Now change some JavaScript or CSS, your page should reload with your changes reflected.
 
 ## Where are my bundles?
 
