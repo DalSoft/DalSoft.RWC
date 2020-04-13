@@ -157,7 +157,7 @@ say("Hello");
 
 Add `<webpack />` to Pages/Index.cshtml.
 
-Run the project you will see that the bundle Index.js is referenced which bundles the module MyJsApp/say.js because it's referenced as a dependency because it was imported by Index.js.
+Run the project you will see that the bundle Index.js is referenced which bundles the module MyJsApp/say.js because it's referenced as a dependency as it was imported by Index.js.
 
 > Remember all CSS and JS  files in the Pages folder are treated as an entry. Therefore you don't have to put all your JavaScript and CSS in the Pages folder. Nothing bad will happen if you do, your build will just slowdown a bit. 
 
@@ -208,7 +208,7 @@ const App = (props) => {
 ReactDOM.render(<App />, document.getElementById('app'))
 ```
 
-Now in any Razor page add <react-test />
+Now in any Razor page add `<react-test />`
 
 > Note that Vendor bundles are included for **all entries**
 
@@ -241,9 +241,9 @@ npm run release
 
 ## Webpack dev server
 
-Webpack well works in proxy mode but no [HMR](https://webpack.js.org/concepts/hot-module-replacement/) yet 😢
+Webpack dev server works well in proxy mode watching and reloading work fine.
 
-To use the Webpack dev server you need to change webpack.config. Uncomment the devServer config and change the proxy target to be the address of your Razor Pages app when you are debugging:
+To use the Webpack dev server you need to change the webpack.config. Uncomment the devServer config and change the proxy target to be the address of your Razor Pages app when you are debugging:
 
 ```js
 devServer: {
@@ -266,11 +266,11 @@ Then from the root of your project run this command:
 npm start
 ```
 
-No change some JavaScript or CSS, your page should reload with your changes reflected.
+Now change some JavaScript or CSS, your page should reload with your changes reflected.
 
 ## Where are my bundles?
 
-Everything is under wwwroot/dist, you can change the output folder in your webpack.config.
+Everything is under wwwroot/dist. You can change the output folder in your webpack.config.
 
 A typical project might look like:
 ```
@@ -306,7 +306,7 @@ dotnet  publish -c Release
 RWC uses ASP.NET Tag Helpers / Razor Components together with Webpack. A custom MSBuild task is used to call a node script in similar way to how [ASP.NET SPA templates](https://docs.microsoft.com/en-us/aspnet/core/client-side/spa/react?view=aspnetcore-3.1&tabs=visual-studio) work. 
 
 There are three Webpack files that do the work:
-* `webpack.config.js` - RWC Webpack config finds every JS and CSS file in the `Pages` folder and makes it's an [Entry]([https://webpack.js.org/concepts/#entry](https://webpack.js.org/concepts/#entry)).
+* `webpack.config.js` - RWC Webpack config finds every JS and CSS file in the `Pages` folder and makes it an [Entry]([https://webpack.js.org/concepts/#entry](https://webpack.js.org/concepts/#entry)).
 
 * `_Webpack/WebpackRazorComponents.ejs` this is the [template](https://github.com/jantimon/html-webpack-plugin#options) called by the [HtmlWebpackPlugin](https://webpack.js.org/plugins/html-webpack-plugin/) to generate Razor Components for each entry. The Razor Component just has the script and link tags for the bundle required for that entry. The Razor Components are generated in the `_webpack/GeneratedRazorComponents` folder.
 
