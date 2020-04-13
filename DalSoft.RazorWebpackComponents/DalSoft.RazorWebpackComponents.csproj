@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>0.0.5</VersionPrefix>
+    <VersionPrefix>0.0.7</VersionPrefix>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <Description>
@@ -11,11 +11,11 @@
       
       RWC seamlessly allows you to use the popular static bundler Webpack with Razor pages.
     </Description>
+    <PackageReleaseNotes>Added support for MVC</PackageReleaseNotes>
     <Owners>DalSoft</Owners>
-    <PackageTags>Webpack, Razor Pages, RWC, Razor Webpack Components, JavaScript, CSS</PackageTags>
+    <PackageTags>Webpack, Razor Pages, MVC, RWC, Razor Webpack Components, JavaScript, CSS</PackageTags>
     <Owners>DalSoft</Owners>
     <Authors>DalSoft</Authors>
-
     <PackageIconUrl>https://dalsoft.co.uk/images/icon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/DalSoft/DalSoft.RWC/</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/DalSoft/DalSoft.RWC/blob/master/LICENSE</PackageLicenseUrl>

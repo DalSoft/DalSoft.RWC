@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -72,9 +75,21 @@ namespace DalSoft.RazorWebpackComponents.TagHelpers.Webpack
         {
             if (_assemblyName == null)
             {
-                var assembly = ViewContext.ViewData.ModelMetadata.ModelType.Assembly;
-                _assemblyName = assembly.GetName().Name;
-                _generatedTypes = assembly.GetTypes().Where(x => x.FullName != null && x.FullName.StartsWith($"{_assemblyName}.{GeneratedComponentPrefix}")).ToArray();
+                var assembly = (ViewContext.ActionDescriptor as CompiledPageActionDescriptor)?.PageTypeInfo.Assembly 
+                               ?? (ViewContext.ActionDescriptor as ControllerActionDescriptor)?.ControllerTypeInfo.Assembly;
+
+                _assemblyName = assembly?.GetName().Name;
+
+                if (_assemblyName!=null &&_assemblyName.EndsWith(".Views"))
+                {
+                    _assemblyName = _assemblyName?.Substring(0, _assemblyName.IndexOf(".Views", StringComparison.Ordinal) == -1 
+                        ? _assemblyName.Length 
+                        : _assemblyName.IndexOf(".Views", StringComparison.Ordinal));
+
+                    assembly = AppDomain.CurrentDomain.GetAssemblies().SingleOrDefault(x => x.GetName().Name == _assemblyName);
+                }
+
+                _generatedTypes = assembly?.GetTypes().Where(x => x.FullName != null && x.FullName.StartsWith($"{_assemblyName}.{GeneratedComponentPrefix}")).ToArray();
             }
             
             // Remove Pages Root
@@ -87,7 +102,7 @@ namespace DalSoft.RazorWebpackComponents.TagHelpers.Webpack
 
             componentTypeFullName = $"{_assemblyName}.{componentTypeFullName.Replace("/", ".")}";
 
-            return _generatedTypes.SingleOrDefault(x => x.FullName == componentTypeFullName);
+            return _generatedTypes?.SingleOrDefault(x => x.FullName == componentTypeFullName);
         }
     }
 }

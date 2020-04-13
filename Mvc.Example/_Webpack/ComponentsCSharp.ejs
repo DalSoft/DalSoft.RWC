@@ -1,0 +1,34 @@
+﻿using DalSoft.RazorWebpackComponents.TagHelpers.Webpack;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+
+namespace <%=htmlWebpackPlugin.options.proj.replace('.csproj', '')%>._Webpack.GeneratedRazorComponents
+{
+<%= htmlWebpackPlugin.files.js.map(path => {
+    
+    path = path.substring(path.indexOf('wwwroot/dist/js/') + "wwwroot/dist/js/".length, path.length);
+   
+    const folder = path.substring(0, path.lastIndexOf('/') + 1);
+    let fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
+
+    if (htmlWebpackPlugin.options.devMode===false) // Strip off filename.hash.js to filename when production
+        fileName = fileName.substring(0, fileName.lastIndexOf('.', fileName.lastIndexOf('.')-1));
+    else 
+        fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+
+    fileName = fileName.replace(/[a-zA-Z]{1}/, (c, i) => c.toUpperCase());
+
+    let namespace = folder.replace(/\//g, ".");
+    
+    if (/* namespace.search(/[^\w.]+/) > -1 || */ folder.indexOf('.') > -1)
+        return; // Currently ASP.NET Components with a dot in the folder do not work
+    
+    namespace = namespace.replace(/[^\w.]+/g, "_");
+    
+    const className = `${folder.replace(/[^\w]+/g, "_")}${fileName.replace(/[^\w]+/g, "_")}`;
+    const baseComponent = `${namespace}${fileName.replace(/[^\w]+/g, "_")}`;
+    const tagName = `${namespace.replace(/\./g, '-')}${fileName.replace(/[^\w]+/g, "-")}`;
+     
+    return `\r\n\    [HtmlTargetElement(tag: "${tagName}", TagStructure = TagStructure.WithoutEndTag)]\r\n\    public class ${className}_WebPack : WebpackComponentTagHelperBase<${baseComponent}> { }`;
+}).join("\r\n\r\n") %>
+}
+

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -50,14 +51,15 @@ namespace DalSoft.RazorWebpackComponents.TagHelpers.Webpack
             webpackContext.ShouldRender = true; // Notify parent that we need the css tags
         }
 
-        private static string TypeToToExecutingFilePath()
+        private string TypeToToExecutingFilePath()
         {
             var executingFilePath = typeof(TComponent).FullName ?? string.Empty; // WebpackHeadOrBodyTagHelperBase expects executingFilePath
             var prefixPosition = executingFilePath.IndexOf(WebpackHeadOrBodyTagHelperBase.GeneratedComponentPrefix, StringComparison.Ordinal) + WebpackHeadOrBodyTagHelperBase.GeneratedComponentPrefix.Length;
-            
+            var viewsOrPages = (ViewContext.ActionDescriptor as ControllerActionDescriptor) == null ? "Pages" : "Views";
+
             executingFilePath = $"{executingFilePath?.Substring(prefixPosition, executingFilePath.Length - prefixPosition)}";
             executingFilePath = executingFilePath.Replace(".", "/");
-            executingFilePath = $"/Pages{executingFilePath}.cshtml";
+            executingFilePath = $"/{viewsOrPages}{executingFilePath}.cshtml";
 
             return executingFilePath;
         }

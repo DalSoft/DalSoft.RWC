@@ -1,0 +1,23 @@
+﻿@code {
+     
+    [Parameter]
+    public bool IsHeadTag { get; set; }
+
+    [Parameter]
+    public bool IsBodyTag { get; set; }
+}
+
+@if (IsHeadTag)
+{
+    <%= htmlWebpackPlugin.files.css.map(src => {
+        src = src.substring(src.indexOf('wwwroot') + "wwwroot".length, src.length)
+        return `@:<link rel="stylesheet" href="${src}" />`
+    }).join("\r\n    ") %>
+}
+@if (IsBodyTag)
+{
+    <%= htmlWebpackPlugin.files.js.map(src => {
+        src = src.substring(src.indexOf('wwwroot') + "wwwroot".length, src.length)
+        return `@:<script type="text/javascript" src="${src}"></script>`
+    }).join("\r\n    ") %>
+}

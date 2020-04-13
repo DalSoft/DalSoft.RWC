@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserJSPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
-const razorPages = "Pages";
+const razorPages = "Views";
 const razorPagesRoot = `./${razorPages}/`;
 const htmlPlugins = devMode => generateHtmlPlugins(devMode);
 
